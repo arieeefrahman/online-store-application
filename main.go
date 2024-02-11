@@ -3,6 +3,7 @@ package main
 import (
 	"online-store-application/database"
 	"online-store-application/database/migration"
+	"online-store-application/route"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,6 +13,7 @@ func main() {
 	migration.InitMigration()
 
 	app := fiber.New()
+	route.InitRoute(app)
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
