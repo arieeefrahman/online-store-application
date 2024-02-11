@@ -27,7 +27,7 @@ func UserHandlerRegister(ctx *fiber.Ctx) error {
 
 	var existingUser entity.User
     database.DB.Where("username = ?", user.Username).First(&existingUser)
-    if existingUser.ID != uuid.Nil { // Username already exists
+    if existingUser.ID != "" { // Username already exists
         return ctx.Status(400).JSON(fiber.Map{
             "message": "Failed to create user",
 			"error": "Username already exists",
@@ -43,7 +43,7 @@ func UserHandlerRegister(ctx *fiber.Ctx) error {
 	}
 
 	newUser := entity.User{
-		ID:       uuid.New(),
+		ID:       uuid.New().String(),
 		Name:     user.Name,
 		Username: user.Username,
 		Password: hashedPassword,
