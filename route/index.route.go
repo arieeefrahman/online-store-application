@@ -8,4 +8,5 @@ import (
 
 func InitRoute(r *fiber.App) {
 	r.Post("/users/register", handler.UserHandlerRegister)
+	r.Post("/users/login", handler.LoginHandler)
 }
