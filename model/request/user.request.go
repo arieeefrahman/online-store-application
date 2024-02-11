@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -36,6 +37,11 @@ func (req *UserCreateRequest) ValidateUserCreateRequest() map[string]string {
 			validationErrors[field] = fmt.Sprintf("'%s' is invalid for field '%s'.", fieldErr.Value(), field)
 		}
 	}
+
+	var validUsernamePattern = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+	if !validUsernamePattern.MatchString(req.Username) {
+        validationErrors["Username"] = "Username can only contain letters, numbers, underscores, and hyphens."
+    }
 
 	return validationErrors
 }
