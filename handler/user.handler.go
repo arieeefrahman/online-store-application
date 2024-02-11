@@ -47,6 +47,7 @@ func UserHandlerRegister(ctx *fiber.Ctx) error {
 		Name:     user.Name,
 		Username: user.Username,
 		Password: hashedPassword,
+		Role: "user",
 	}
 
 	if err := database.DB.Create(&newUser).Error; err != nil {
