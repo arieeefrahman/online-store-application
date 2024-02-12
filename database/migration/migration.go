@@ -10,7 +10,7 @@ func InitMigration() {
 	err := database.DB.AutoMigrate(&entity.User{})
 
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	log.Println("Database migrated")
