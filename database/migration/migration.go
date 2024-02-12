@@ -7,7 +7,7 @@ import (
 )
 
 func InitMigration() {
-	err := database.DB.AutoMigrate(&entity.User{}, &entity.Category{})
+	err := database.DB.AutoMigrate(&entity.User{}, &entity.Category{}, &entity.Product{})
 
 	if err != nil {
 		log.Fatal(err)
