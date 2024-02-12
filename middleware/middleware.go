@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"online-store-application/redis"
 	"online-store-application/util"
 	"strings"
 
@@ -10,7 +11,6 @@ import (
 
 func Auth(ctx *fiber.Ctx) error {
 	authHeader := ctx.Get("Authorization")
-
 	if authHeader == "" {
 		err := errors.New("missing authorization header")
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -34,6 +34,14 @@ func Auth(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "failed to authenticate",
 			"error":   err.Error(),
+		})
+	}
+
+	_, err = redis.GetToken(token)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "failed to authenticate",
+			"error":   "Token is expired or not valid",
 		})
 	}
 

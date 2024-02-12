@@ -5,6 +5,7 @@ import (
 	"online-store-application/model/entity"
 	"online-store-application/model/request"
 	"online-store-application/model/response"
+	"online-store-application/redis"
 	"online-store-application/util"
 	"time"
 
@@ -14,7 +15,6 @@ import (
 
 func LoginHandler(ctx *fiber.Ctx) error {
 	loginReq := new(request.LoginRequest)
-
 	if err := ctx.BodyParser(loginReq); err != nil {
 		return err
 	}
@@ -28,7 +28,6 @@ func LoginHandler(ctx *fiber.Ctx) error {
 
 	var existingUser entity.User
 	err := database.DB.First(&existingUser, "username = ?", loginReq.Username).Error
-
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Failed to login",
@@ -37,7 +36,6 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	}
 
 	isPasswordValid := util.CheckingPassword(loginReq.Password, existingUser.Password)
-
 	if !isPasswordValid {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Failed to login",
@@ -52,10 +50,16 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 
 	tkn, err := util.GenerateToken(&claims)
-	
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Failed to login",
+			"error":   err.Error(),
+		})
+	}
+
+	if err := redis.StoreToken(tkn); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to store token",
 			"error":   err.Error(),
 		})
 	}
