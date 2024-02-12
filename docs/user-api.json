@@ -145,25 +145,39 @@
                                 "schema":{
                                     "type":"object",
                                     "properties":{
+                                        "message": {
+                                            "type": "string",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "id": {
-                                                    "type": "number"
-                                                },
-                                                "username": {
-                                                    "type": "string"
-                                                },
-                                                "name": {
-                                                    "type": "string"
-                                                },
                                                 "token":{
                                                     "type":"string"
                                                 }
                                             } 
-                                        },
-                                        "errors": {
-                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "200": {
+                                        "description": "Success login user",
+                                        "value": {
+                                            "message": "Login success",
+                                            "data": {
+                                                "token": "eyxxbxxiOixxUzI1NiIsInxxcCI6xxpXVCJ9.eyxxeHAxxjE3MDc3MjgwNxxsIm5hbxxiOiJhcmllZiIsInJxxGUiOiJxx2VyIiwidXNlcm5hxxUiOiJhcmllZiJ9.sm8vGOESm7Txx-OPPVCrmvNDJfY9Uo3Exx63FDmZrTw"
+                                            }
+                                        }
+                                    },
+                                    "400": {
+                                        "description": "Bad request",
+                                        "value": {
+                                            "message": "Failed to login",
+                                            "error": "Username or password is wrong"
                                         }
                                     }
                                 }
