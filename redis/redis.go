@@ -60,3 +60,7 @@ func StoreToken(token string) error {
 func GetToken(token string) (string, error) {
 	return rdb.Get(context.Background(), token).Result()
 }
+
+func DeleteToken(token string) error {
+	return rdb.Del(context.Background(), token).Err()
+}

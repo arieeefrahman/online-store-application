@@ -7,6 +7,7 @@ import (
 	"online-store-application/model/response"
 	"online-store-application/redis"
 	"online-store-application/util"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -71,5 +72,23 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	return ctx.JSON(fiber.Map{
 		"message": "Login success",
 		"data":    response,
+	})
+}
+
+func LogoutHandler(ctx *fiber.Ctx) error {
+	authHeader := ctx.Get("Authorization")
+	parts := strings.Split(authHeader, " ")
+	token := parts[1]
+
+	err := redis.DeleteToken(token)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "failed to logout",
+			"error":   err.Error(),
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "logout success",
 	})
 }
