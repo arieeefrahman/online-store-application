@@ -1,13 +1,19 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"online-store-application/database"
+	"online-store-application/database/migration"
+	"online-store-application/redis"
+	"online-store-application/route"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func main() {
-    app := fiber.New()
-
-    app.Get("/", func(c *fiber.Ctx) error {
-        return c.SendString("Hello, World!")
-    })
-
-    app.Listen(":3000")
+	redis.InitRedis()
+	database.InitDB()
+	migration.InitMigration()
+	app := fiber.New()
+	route.InitRoute(app)
+	app.Listen(":8080")
 }
