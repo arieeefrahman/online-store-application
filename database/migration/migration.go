@@ -11,7 +11,6 @@ func InitMigration() {
 		&entity.User{}, 
 		&entity.Category{}, 
 		&entity.Product{},
-		&entity.Cart{},
 		&entity.CartItem{},
 	)
 

@@ -25,7 +25,7 @@ func Auth(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "failed to authenticate",
 			"error":   err.Error(),
-		})	
+		})
 	}
 	token := parts[1]
 

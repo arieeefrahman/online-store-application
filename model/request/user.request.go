@@ -13,7 +13,7 @@ type UserCreateRequest struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-func (req *UserCreateRequest) ValidateUserCreateRequest() map[string]string {
+func (req *UserCreateRequest) Validate() map[string]string {
 	validate := validator.New()
 	err := validate.Struct(req)
 

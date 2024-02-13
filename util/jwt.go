@@ -56,3 +56,29 @@ func VerifyToken(tokenStr string) (*jwt.Token, error) {
 
 	return tkn, nil
 }
+
+func DecodeToken(tokenStr string) (jwt.MapClaims, error) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+
+	secretKey := os.Getenv("JWT_SECRET_KEY")
+
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, isValid := token.Method.(*jwt.SigningMethodHMAC); !isValid {
+			return nil, jwt.ErrSignatureInvalid
+		}
+		return []byte(secretKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return nil, jwt.ErrInvalidKeyType
+	}
+}

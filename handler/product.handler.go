@@ -12,18 +12,25 @@ import (
 )
 
 func ProductCreateHandler(ctx *fiber.Ctx) error {
-	product := new(request.Product)
+	productReq := new(request.ProductRequest)
 
-	if err := ctx.BodyParser(product); err != nil {
+	if err := ctx.BodyParser(productReq); err != nil {
 		return err
 	}
 
+	if err := productReq.Validate(); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Validation failed",
+			"errors":  err,
+		})
+	}
+
 	newProduct := entity.Product{
-		Name:        product.Name,
-		Description: product.Description,
-		Price:       product.Price,
-		Stock:       product.Stock,
-		CategoryID:  product.CategoryID,
+		Name:        productReq.Name,
+		Description: productReq.Description,
+		Price:       productReq.Price,
+		Stock:       productReq.Stock,
+		CategoryID:  productReq.CategoryID,
 	}
 
 	if err := database.DB.Create(&newProduct).Error; err != nil {
@@ -100,13 +107,13 @@ func ProductGetAllHandler(ctx *fiber.Ctx) error {
 
 func ProductGetByCategoryHandler(ctx *fiber.Ctx) error {
 	categoryId := ctx.Params("category_id")
-    id, err := strconv.Atoi(categoryId)
+	id, err := strconv.Atoi(categoryId)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "invalid product ID or null",
 		})
 	}
-    
+
 	var products []entity.Product
 	if err := database.DB.Where("category_id = ?", id).Find(&products).Error; err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
@@ -175,7 +182,7 @@ func ProductGetByIdHandler(ctx *fiber.Ctx) error {
 
 func ProductDeleteHandler(ctx *fiber.Ctx) error {
 	productId := ctx.Params("product_id")
-    id, err := strconv.Atoi(productId)
+	id, err := strconv.Atoi(productId)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "invalid product ID or null",

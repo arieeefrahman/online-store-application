@@ -8,12 +8,21 @@ import (
 )
 
 func InitRoute(r *fiber.App) {
-	r.Post("/users/register", handler.UserHandlerRegister)
-	r.Post("/users/login", handler.LoginHandler)
-	r.Post("users/logout", middleware.Auth, handler.LogoutHandler)
-	r.Post("/products", handler.ProductCreateHandler)
-	r.Get("/products", handler.ProductGetAllHandler)
-	r.Get("/products/category/:category_id", handler.ProductGetByCategoryHandler)
-	r.Get("/products/:product_id", handler.ProductGetByIdHandler)
-	r.Delete("/products/:product_id", handler.ProductDeleteHandler)
+	userRoutes := r.Group("/users")
+	userRoutes.Post("/register", handler.UserHandlerRegister)
+	userRoutes.Post("/login", handler.LoginHandler)
+	userRoutes.Post("/logout", middleware.Auth, handler.LogoutHandler)
+
+	productRoutes := r.Group("/products", middleware.Auth)
+	productRoutes.Post("/", handler.ProductCreateHandler)
+	productRoutes.Get("/", handler.ProductGetAllHandler)
+	productRoutes.Get("/category/:category_id", handler.ProductGetByCategoryHandler)
+	productRoutes.Get("/:product_id", handler.ProductGetByIdHandler)
+	productRoutes.Delete("/:product_id", handler.ProductDeleteHandler)
+
+	cartItemRoutes := r.Group("/cart-items", middleware.Auth)
+	cartItemRoutes.Post("/", handler.CartItemCreateHandler)
+	cartItemRoutes.Put("/:cart_item_id", handler.CartItemUpdateHandler)
+	cartItemRoutes.Delete("/:cart_item_id", handler.CartItemDeleteHandler)
+	cartItemRoutes.Get("/user", handler.CartItemGetByUserIdHandler)
 }

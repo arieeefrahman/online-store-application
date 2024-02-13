@@ -13,12 +13,7 @@ func main() {
 	redis.InitRedis()
 	database.InitDB()
 	migration.InitMigration()
-
 	app := fiber.New()
 	route.InitRoute(app)
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
-
-	app.Listen(":3000")
+	app.Listen(":8080")
 }

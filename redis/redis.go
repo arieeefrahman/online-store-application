@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -19,19 +18,19 @@ func InitRedis() {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
 
-	redisAddr := os.Getenv("REDIS_ADDRESS")
-	redisPass := os.Getenv("REDIS_PASSWORD")
-	redisDbStr := os.Getenv("REDIS_DB_TOKEN")
-	
-	redisDB, err := strconv.Atoi(redisDbStr)
-    if err != nil {
-        log.Fatalf("Error converting REDIS_DB_TOKEN string to integer: %v", err)
-    }
+	// redisAddr := os.Getenv("REDIS_ADDRESS")
+	// redisPass := os.Getenv("REDIS_PASSWORD")
+	// redisDbStr := os.Getenv("REDIS_DB_TOKEN")
+
+	// redisDB, err := strconv.Atoi(redisDbStr)
+	// if err != nil {
+	// 	log.Fatalf("Error converting REDIS_DB_TOKEN string to integer: %v", err)
+	// }
 
 	rdb = _redis.NewClient(&_redis.Options{
-		Addr:     redisAddr,
-		Password: redisPass,
-		DB:       redisDB,
+		Addr:     "redis:6379", // Redis server address
+		Password: "",               // No password
+		DB:       0,                // Default DB
 	})
 
 	pong, err := rdb.Ping(context.Background()).Result()
@@ -47,13 +46,13 @@ func StoreToken(token string) error {
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
-	
+
 	expireTokenTimeStr := os.Getenv("EXPIRE_TOKEN_TIME")
-    expDuration, err := time.ParseDuration(expireTokenTimeStr)
+	expDuration, err := time.ParseDuration(expireTokenTimeStr)
 	if err != nil {
-        log.Fatalf("Error converting EXPIRE_TOKEN_TIME string to integer: %v", err)
-    }
- 
+		log.Fatalf("Error converting EXPIRE_TOKEN_TIME string to integer: %v", err)
+	}
+
 	return rdb.Set(context.Background(), token, "", expDuration).Err()
 }
 

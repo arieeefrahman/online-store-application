@@ -6,15 +6,12 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type ProductRequest struct {
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	Price       int    `json:"price" validate:"required"`
-	Stock       int    `json:"stock" validate:"required"`
-	CategoryID  uint   `json:"category_id" validate:"required"`
+type CartItemRequest struct {
+	ProductID uint `json:"product_id" validate:"required"`
+	Quantity  int  `json:"quantity" validate:"required"`
 }
 
-func (req *ProductRequest) Validate() map[string]string {
+func (req *CartItemRequest) Validate() map[string]string {
 	validate := validator.New()
 	err := validate.Struct(req)
 

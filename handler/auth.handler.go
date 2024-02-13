@@ -20,7 +20,7 @@ func LoginHandler(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := loginReq.ValidateLoginRequest(); err != nil {
+	if err := loginReq.Validate(); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Validation failed",
 			"errors":  err,
@@ -45,6 +45,7 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	}
 
 	claims := jwt.MapClaims{}
+	claims["user_id"] = existingUser.ID
 	claims["username"] = existingUser.Username
 	claims["name"] = existingUser.Name
 	claims["role"] = existingUser.Role
