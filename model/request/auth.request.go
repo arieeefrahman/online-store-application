@@ -11,7 +11,7 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
-func (req *LoginRequest) ValidateLoginRequest() map[string]string {
+func (req *LoginRequest) Validate() map[string]string {
 	validate := validator.New()
 	err := validate.Struct(req)
 

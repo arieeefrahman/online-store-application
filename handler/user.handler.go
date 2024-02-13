@@ -18,7 +18,7 @@ func UserHandlerRegister(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := user.ValidateUserCreateRequest(); err != nil {
+	if err := user.Validate(); err != nil {
 		return ctx.Status(400).JSON(fiber.Map{
 			"message": "Validation failed",
 			"errors":  err,

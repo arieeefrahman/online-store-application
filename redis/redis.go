@@ -22,11 +22,11 @@ func InitRedis() {
 	redisAddr := os.Getenv("REDIS_ADDRESS")
 	redisPass := os.Getenv("REDIS_PASSWORD")
 	redisDbStr := os.Getenv("REDIS_DB_TOKEN")
-	
+
 	redisDB, err := strconv.Atoi(redisDbStr)
-    if err != nil {
-        log.Fatalf("Error converting REDIS_DB_TOKEN string to integer: %v", err)
-    }
+	if err != nil {
+		log.Fatalf("Error converting REDIS_DB_TOKEN string to integer: %v", err)
+	}
 
 	rdb = _redis.NewClient(&_redis.Options{
 		Addr:     redisAddr,
@@ -47,13 +47,13 @@ func StoreToken(token string) error {
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
-	
+
 	expireTokenTimeStr := os.Getenv("EXPIRE_TOKEN_TIME")
-    expDuration, err := time.ParseDuration(expireTokenTimeStr)
+	expDuration, err := time.ParseDuration(expireTokenTimeStr)
 	if err != nil {
-        log.Fatalf("Error converting EXPIRE_TOKEN_TIME string to integer: %v", err)
-    }
- 
+		log.Fatalf("Error converting EXPIRE_TOKEN_TIME string to integer: %v", err)
+	}
+
 	return rdb.Set(context.Background(), token, "", expDuration).Err()
 }
 
