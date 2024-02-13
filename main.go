@@ -15,5 +15,5 @@ func main() {
 	migration.InitMigration()
 	app := fiber.New()
 	route.InitRoute(app)
-	app.Listen(":3000")
+	app.Listen(":8080")
 }
